@@ -37,7 +37,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-seri
   border-radius:2px;transition:width .4s ease}
 
 /* ── Layout ── */
-.main{max-width:720px;margin:0 auto;padding:28px 14px 88px}
+.main{max-width:720px;margin:0 auto;padding:28px 14px 40px}
 
 /* ── Step visibility ── */
 .step{display:none}
@@ -87,11 +87,11 @@ table.matrix td.hi{background:var(--primary-l)}
 .m-radio{width:19px;height:19px;accent-color:var(--primary);cursor:pointer}
 
 /* ── Nav bar ── */
-.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;
-  border-top:1px solid var(--border);padding:14px 20px;
-  display:flex;justify-content:space-between;align-items:center;
-  z-index:200;box-shadow:0 -4px 12px rgba(0,0,0,.07)}
-.nav .ctr{font-size:.78rem;color:var(--muted);font-weight:500}
+.nav{display:none}
+.inline-nav{display:flex;justify-content:space-between;align-items:center;
+  margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.inline-nav-center{display:flex;justify-content:center;margin-top:24px;
+  padding-top:20px;border-top:1px solid var(--border)}
 
 .btn{padding:9px 22px;border-radius:8px;font-size:.9rem;font-weight:600;
   cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
@@ -464,14 +464,11 @@ let cur = 0;
 const STEPS = 8;
 const LABELS = ['Welcome','DAP Readiness','Experience','Activities','Confidence','Tools','Priorities','Results'];
 
-// ── Progress & nav ──────────────────────────────────────────────
+// ── Progress ─────────────────────────────────────────────────────
 function render() {
   const wrap = document.getElementById('progWrap');
   const fill = document.getElementById('progFill');
   const pills = document.getElementById('progPills');
-  const btnBack = document.getElementById('btnBack');
-  const btnNext = document.getElementById('btnNext');
-  const ctr = document.getElementById('navCtr');
 
   wrap.style.display = cur === 0 ? 'none' : 'block';
   fill.style.width = (cur / (STEPS - 1) * 100) + '%';
@@ -481,18 +478,6 @@ function render() {
     const cls = n < cur ? 'pill-done' : n === cur ? 'pill-active' : 'pill-todo';
     return `<span class="pill ${cls}">${lbl}</span>`;
   }).join('');
-
-  btnBack.style.visibility = cur === 0 ? 'hidden' : 'visible';
-  document.getElementById('navBar').style.display = cur === 0 ? 'none' : 'flex';
-
-  if (cur === STEPS - 1) {
-    btnNext.style.display = 'none';
-    ctr.textContent = 'Complete! 🎉';
-  } else {
-    btnNext.style.display = '';
-    btnNext.textContent = cur === STEPS - 2 ? 'See My Results →' : 'Continue →';
-    ctr.textContent = `Step ${cur} of ${STEPS - 2}`;
-  }
 }
 
 function showStep(n) {
@@ -765,6 +750,21 @@ noneExclusion('capQ4', 'q4none');
 document.getElementById('participantName').addEventListener('keydown', e => {
   if (e.key === 'Enter') goNext();
 });
+
+// ── Inject inline nav buttons into each question step ────────────
+for (let i = 1; i <= STEPS - 2; i++) {
+  const card = document.querySelector(`#step-${i} .card`);
+  if (!card) continue;
+  const isLast = (i === STEPS - 2);
+  const div = document.createElement('div');
+  div.className = 'inline-nav';
+  div.innerHTML = `
+    <button class="btn btn-sec" onclick="goBack()">← Back</button>
+    <button class="btn btn-pri" onclick="goNext()">${isLast ? 'See My Results →' : 'Continue →'}</button>
+  `;
+  card.appendChild(div);
+}
+
 render();
 </script>
 </body>
