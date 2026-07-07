@@ -749,7 +749,7 @@ async function submitToSupabase(payload) {
   if (!db) { statusEl.textContent = ''; return; }
   statusEl.style.color = '#64748b';
   statusEl.textContent = 'Saving your response…';
-  const { error } = await db.from('survey_responses').insert(payload);
+  const { error } = await db.from('DAP Survey Buckets').insert(payload);
   if (error) {
     statusEl.style.color = '#dc2626';
     statusEl.textContent = '⚠ Could not save response — ' + error.message;
