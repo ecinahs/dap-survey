@@ -434,6 +434,7 @@ table.matrix td.hi{background:var(--primary-l)}
       <div class="tags" id="imprTags"></div>
     </div>
 
+    <div id="saveStatus" style="text-align:center;font-size:.82rem;margin-bottom:8px;min-height:20px"></div>
     <div class="actions">
       <button class="btn btn-pri" onclick="window.print()">🖨️ Print Profile</button>
       <button class="btn btn-sec" onclick="restartSurvey()">↩ Start Over</button>
@@ -449,8 +450,16 @@ table.matrix td.hi{background:var(--primary-l)}
   <button class="btn btn-pri" id="btnNext" onclick="goNext()">Start Survey →</button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 'use strict';
+
+// ── Supabase config — fill in your values ────────────────────────
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+const SUPABASE_KEY  = 'YOUR_SUPABASE_ANON_KEY';
+const db = (SUPABASE_URL !== 'YOUR_SUPABASE_URL')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
 let cur = 0;
 const STEPS = 8;
 const LABELS = ['Welcome','DAP Readiness','Experience','Activities','Confidence','Tools','Priorities','Results'];
@@ -715,6 +724,38 @@ function buildResults() {
     imprCard.style.display = '';
   } else {
     imprCard.style.display = 'none';
+  }
+
+  // Save to Supabase
+  submitToSupabase({
+    email: document.getElementById('participantName').value.trim(),
+    dap_bucket: dap.bucket, dap_stage: dap.title,
+    capability_level: cap.level, capability_label: cap.title,
+    cap_total: capTotal,
+    dap_q1: score('dapQ1'), dap_q2: score('dapQ2'), dap_q3: score('dapQ3'),
+    q1_score: q1, q2_score: q2Score, q3_score: q3Score, q4_score: q4Score,
+    q2_activities: q2Items.map(c => c.value),
+    q3_confidence: Object.fromEntries(
+      ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres']
+        .map(f => [f, parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0)])
+    ),
+    q4_tools: q4Items.map(c => c.value),
+    q5_priorities: q5.map(c => c.value),
+  });
+}
+
+async function submitToSupabase(payload) {
+  const statusEl = document.getElementById('saveStatus');
+  if (!db) { statusEl.textContent = ''; return; }
+  statusEl.style.color = '#64748b';
+  statusEl.textContent = 'Saving your response…';
+  const { error } = await db.from('survey_responses').insert(payload);
+  if (error) {
+    statusEl.style.color = '#dc2626';
+    statusEl.textContent = '⚠ Could not save response — ' + error.message;
+  } else {
+    statusEl.style.color = '#059669';
+    statusEl.textContent = '✓ Response saved successfully.';
   }
 }
 
