@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAP Readiness &amp; Data Capability Survey</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --primary:#4338ca;--primary-h:#3730a3;--primary-l:#eef2ff;
+  --sky:#0ea5e9;--sky-l:#e0f2fe;
+  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;--bg:#f1f5f9;
+  --r:12px;--sh:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.06);
+}
+
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;font-size:15px}
+
+/* ── Header ── */
+.hdr{background:linear-gradient(135deg,#4338ca 0%,#0ea5e9 100%);
+  color:#fff;padding:20px 24px;text-align:center}
+.hdr h1{font-size:1.3rem;font-weight:700;letter-spacing:-.01em}
+.hdr p{font-size:.85rem;opacity:.85;margin-top:3px}
+
+/* ── Progress ── */
+.prog-wrap{background:#fff;border-bottom:1px solid var(--border);
+  padding:14px 20px;position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.prog-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pill{font-size:.72rem;padding:3px 11px;border-radius:20px;font-weight:600;transition:all .2s}
+.pill-done{background:var(--primary);color:#fff}
+.pill-active{background:var(--sky);color:#fff;box-shadow:0 0 0 3px var(--sky-l)}
+.pill-todo{background:var(--border);color:var(--muted)}
+.prog-track{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--sky));
+  border-radius:2px;transition:width .4s ease}
+
+/* ── Layout ── */
+.main{max-width:720px;margin:0 auto;padding:28px 14px 88px}
+
+/* ── Step visibility ── */
+.step{display:none}
+.step.active{display:block;animation:fadeUp .3s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);padding:28px;margin-bottom:18px}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:.7rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;padding:3px 10px;border-radius:20px;margin-bottom:14px}
+.badge-dap{background:var(--primary-l);color:var(--primary)}
+.badge-cap{background:var(--sky-l);color:#0369a1}
+
+/* ── Question typography ── */
+.q-title{font-size:1.05rem;font-weight:700;margin-bottom:4px;line-height:1.4}
+.q-sub{font-size:.83rem;color:var(--muted);margin-bottom:18px}
+.q-block{margin-bottom:26px}
+.q-block:last-child{margin-bottom:0}
+
+/* ── Option items (radio & checkbox) ── */
+.opt-list{display:flex;flex-direction:column;gap:9px}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px}
+
+.opt{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;
+  border:2px solid var(--border);border-radius:9px;cursor:pointer;
+  transition:border-color .15s,background .15s;background:#fff;user-select:none}
+.opt:hover{border-color:var(--primary);background:var(--primary-l)}
+.opt.sel{border-color:var(--primary);background:var(--primary-l)}
+.opt input[type=radio],.opt input[type=checkbox]{
+  width:17px;height:17px;accent-color:var(--primary);flex-shrink:0;margin-top:2px;cursor:pointer}
+.opt-lbl{font-size:.9rem;color:var(--text);cursor:pointer;line-height:1.45}
+
+/* ── Matrix ── */
+.matrix-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.matrix{width:100%;border-collapse:collapse;font-size:.83rem}
+table.matrix th{padding:9px 6px;text-align:center;font-weight:600;color:var(--muted);
+  font-size:.75rem;border-bottom:2px solid var(--border)}
+table.matrix th:first-child{text-align:left;min-width:155px}
+table.matrix td{padding:11px 6px;border-bottom:1px solid var(--border);
+  text-align:center;vertical-align:middle;transition:background .15s}
+table.matrix td:first-child{text-align:left;font-weight:500;padding-left:2px}
+table.matrix tr:last-child td{border-bottom:none}
+table.matrix tr:hover td{background:#f8faff}
+table.matrix td.hi{background:var(--primary-l)}
+.m-radio{width:19px;height:19px;accent-color:var(--primary);cursor:pointer}
+
+/* ── Nav bar ── */
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fff;
+  border-top:1px solid var(--border);padding:14px 20px;
+  display:flex;justify-content:space-between;align-items:center;
+  z-index:200;box-shadow:0 -4px 12px rgba(0,0,0,.07)}
+.nav .ctr{font-size:.78rem;color:var(--muted);font-weight:500}
+
+.btn{padding:9px 22px;border-radius:8px;font-size:.9rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.btn-pri{background:var(--primary);color:#fff}
+.btn-pri:hover{background:var(--primary-h);transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(67,56,202,.3)}
+.btn-pri:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;
+  transform:none;box-shadow:none}
+.btn-sec{background:transparent;color:var(--muted)}
+.btn-sec:hover{background:var(--bg);color:var(--text)}
+
+/* ── Welcome ── */
+.welcome{text-align:center;padding:8px 0 28px}
+.welcome .big-icon{font-size:3.5rem;display:block;margin-bottom:14px}
+.welcome h2{font-size:1.6rem;font-weight:800;margin-bottom:10px;color:var(--text);line-height:1.3}
+.welcome p{font-size:.95rem;color:var(--muted);max-width:460px;margin:0 auto 20px}
+.name-row{display:flex;justify-content:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.name-input{padding:9px 16px;border:2px solid var(--border);border-radius:8px;
+  font-size:.9rem;width:100%;max-width:280px;outline:none;
+  transition:border-color .15s;font-family:inherit}
+.name-input:focus{border-color:var(--primary)}
+.overview{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:20px}
+.ov-item{background:var(--bg);border-radius:9px;padding:15px;text-align:left}
+.ov-item .ic{font-size:1.4rem;margin-bottom:6px;display:block}
+.ov-item strong{font-size:.83rem;display:block;color:var(--text);margin-bottom:3px}
+.ov-item span{font-size:.78rem;color:var(--muted)}
+
+/* ── Results ── */
+.res-header{text-align:center;margin-bottom:28px}
+.res-header .big-icon{font-size:2.8rem;display:block;margin-bottom:10px}
+.res-header h2{font-size:1.45rem;font-weight:800;margin-bottom:6px}
+.res-header p{color:var(--muted);font-size:.9rem}
+
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.pcard{border-radius:var(--r);padding:22px;text-align:center}
+.pcard.dap{background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:2px solid #c7d2fe}
+.pcard.cap{background:linear-gradient(135deg,#e0f2fe,#bae6fd);border:2px solid #7dd3fc}
+.pcard .plabel{font-size:.68rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--muted);margin-bottom:6px}
+.pcard .picon{font-size:2.4rem;display:block;margin:6px 0}
+.pcard .ptitle{font-size:1.05rem;font-weight:800;margin-bottom:5px}
+.pcard .pdesc{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+.rec-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);
+  padding:22px;margin-bottom:18px;border-left:4px solid var(--primary)}
+.rec-card h3{font-size:.95rem;font-weight:700;margin-bottom:12px;
+  display:flex;align-items:center;gap:7px}
+.rec-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+.rec-list li{display:flex;align-items:flex-start;gap:9px;font-size:.85rem}
+.rec-list li::before{content:'→';color:var(--primary);font-weight:800;flex-shrink:0;margin-top:1px}
+
+.impr-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);
+  padding:22px;margin-bottom:18px}
+.impr-card strong{font-size:.9rem;font-weight:700;display:block;margin-bottom:12px}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{padding:4px 11px;border-radius:20px;font-size:.78rem;font-weight:600;
+  background:var(--primary-l);color:var(--primary)}
+
+.actions{text-align:center;margin-top:22px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── Responsive ── */
+@media(max-width:580px){
+  .card{padding:18px 14px}
+  .profile-grid{grid-template-columns:1fr}
+  .opt-grid{grid-template-columns:1fr}
+  .overview{grid-template-columns:1fr}
+  table.matrix th,table.matrix td{padding:8px 3px}
+  table.matrix th:first-child{font-size:.7rem;min-width:120px}
+}
+
+@media print{
+  .nav,.prog-wrap{display:none!important}
+  .step{display:block!important}
+  body{background:#fff}
+  .card,.pcard,.rec-card,.impr-card{box-shadow:none;border:1px solid #ddd}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <h1>DAP Readiness &amp; Data Capability Survey</h1>
+  <p>Help us tailor your workshop experience</p>
+</div>
+
+<div class="prog-wrap" id="progWrap" style="display:none">
+  <div class="prog-pills" id="progPills"></div>
+  <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+</div>
+
+<div class="main">
+
+  <!-- ── Step 0: Welcome ── -->
+  <div class="step active" id="step-0">
+    <div class="card">
+      <div class="welcome">
+        <span class="big-icon">📊</span>
+        <h2>Welcome to Your Data Profile Survey</h2>
+        <p>This short survey helps us understand where you are on your data journey so we can tailor today's workshop to your specific needs.</p>
+        <div class="name-row">
+          <input class="name-input" type="email" id="participantName" placeholder="Your email address" maxlength="120" required>
+          <button class="btn btn-pri" onclick="goNext()">Start Survey →</button>
+        </div>
+      </div>
+      <div class="overview">
+        <div class="ov-item">
+          <span class="ic">🗺️</span>
+          <strong>DAP Journey Stage</strong>
+          <span>3 questions to identify where you are with the Data Analytics Platform</span>
+        </div>
+        <div class="ov-item">
+          <span class="ic">💡</span>
+          <strong>Data Capability</strong>
+          <span>5 questions to map your current skills and identify growth areas</span>
+        </div>
+        <div class="ov-item">
+          <span class="ic">⏱️</span>
+          <strong>About 5 minutes</strong>
+          <span>7 steps total — go back and change answers at any time</span>
+        </div>
+        <div class="ov-item">
+          <span class="ic">🎯</span>
+          <strong>Personalised Result</strong>
+          <span>A tailored profile and recommended support pathway</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 1: DAP Readiness ── -->
+  <div class="step" id="step-1">
+    <div class="card">
+      <span class="badge badge-dap">🗺️ Section 1 of 2 · DAP Readiness</span>
+
+      <div class="q-block">
+        <div class="q-title">1. Which of the following best describes where you are with DAP right now?</div>
+        <div class="q-sub">Select the option that best describes you.</div>
+        <div class="opt-list">
+          <label class="opt"><input type="radio" name="dapQ1" value="1"><span class="opt-lbl">I'm new to DAP and here to find out what it is — I don't yet have a dataset or a specific use case in mind.</span></label>
+          <label class="opt"><input type="radio" name="dapQ1" value="2"><span class="opt-lbl">I have a dataset and a use case ready, and I want to build an end-to-end pipeline on DAP.</span></label>
+          <label class="opt"><input type="radio" name="dapQ1" value="3"><span class="opt-lbl">I'm already on DAP and want to explore what more I can do with the platform.</span></label>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-title">2. Do you currently have a dataset ready to work with?</div>
+        <div class="q-sub">Select the option that best describes your situation.</div>
+        <div class="opt-list">
+          <label class="opt"><input type="radio" name="dapQ2" value="1"><span class="opt-lbl">No — I don't have a dataset yet and I'm still figuring out what data I might need.</span></label>
+          <label class="opt"><input type="radio" name="dapQ2" value="2"><span class="opt-lbl">Yes — I have a dataset identified and know what I'd like to do with it.</span></label>
+          <label class="opt"><input type="radio" name="dapQ2" value="3"><span class="opt-lbl">Yes — I'm already working with data on DAP.</span></label>
+        </div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-title">3. What outcome are you hoping to achieve from today's workshop?</div>
+        <div class="q-sub">Select the option that best describes your goal.</div>
+        <div class="opt-list">
+          <label class="opt"><input type="radio" name="dapQ3" value="1"><span class="opt-lbl">To understand what DAP is and whether it's relevant to my work — I'm just starting to explore.</span></label>
+          <label class="opt"><input type="radio" name="dapQ3" value="2"><span class="opt-lbl">To get hands-on and start building — I want to take my dataset and create an end-to-end pipeline.</span></label>
+          <label class="opt"><input type="radio" name="dapQ3" value="3"><span class="opt-lbl">To go further with DAP — I'm already onboard and want to discover advanced features and capabilities.</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 2: Q1 Experience ── -->
+  <div class="step" id="step-2">
+    <div class="card">
+      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
+      <div class="q-title">Q1. How would you describe your experience working with data?</div>
+      <div class="q-sub">Choose the option that best describes you.</div>
+      <div class="opt-list">
+        <label class="opt"><input type="radio" name="capQ1" value="0"><span class="opt-lbl">I'm new to working with data.</span></label>
+        <label class="opt"><input type="radio" name="capQ1" value="1"><span class="opt-lbl">I can analyse data using Excel.</span></label>
+        <label class="opt"><input type="radio" name="capQ1" value="2"><span class="opt-lbl">I can create dashboards using Power BI or Tableau.</span></label>
+        <label class="opt"><input type="radio" name="capQ1" value="3"><span class="opt-lbl">I can write SQL queries.</span></label>
+        <label class="opt"><input type="radio" name="capQ1" value="4"><span class="opt-lbl">I can use Python or R for data analysis.</span></label>
+        <label class="opt"><input type="radio" name="capQ1" value="5"><span class="opt-lbl">I regularly build data products or analytics solutions.</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 3: Q2 Activities ── -->
+  <div class="step" id="step-3">
+    <div class="card">
+      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
+      <div class="q-title">Q2. Which of the following have you done before?</div>
+      <div class="q-sub">Select all that apply.</div>
+      <div class="opt-grid">
+        <label class="opt"><input type="checkbox" name="capQ2" value="pivottables"><span class="opt-lbl">Used PivotTables in Excel</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="charts"><span class="opt-lbl">Created charts or reports</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="dashboard"><span class="opt-lbl">Built a dashboard</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="sql"><span class="opt-lbl">Written SQL queries</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="cleaning"><span class="opt-lbl">Cleaned or transformed datasets</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="combine"><span class="opt-lbl">Combined data from multiple sources</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="databricks"><span class="opt-lbl">Used Databricks</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="python-r"><span class="opt-lbl">Used Python or R</span></label>
+        <label class="opt"><input type="checkbox" name="capQ2" value="none" id="q2none"><span class="opt-lbl">None of the above</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 4: Q3 Confidence matrix ── -->
+  <div class="step" id="step-4">
+    <div class="card">
+      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
+      <div class="q-title">Q3. How confident are you in performing the following tasks?</div>
+      <div class="q-sub">Select one option per row.</div>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Not confident</th>
+              <th>Somewhat</th>
+              <th>Confident</th>
+              <th>Very confident</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Finding relevant datasets</td>
+              <td><input class="m-radio" type="radio" name="c_find" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_find" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_find" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_find" value="4"></td>
+            </tr>
+            <tr>
+              <td>Cleaning data</td>
+              <td><input class="m-radio" type="radio" name="c_clean" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_clean" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_clean" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_clean" value="4"></td>
+            </tr>
+            <tr>
+              <td>Writing SQL</td>
+              <td><input class="m-radio" type="radio" name="c_sql" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_sql" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_sql" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_sql" value="4"></td>
+            </tr>
+            <tr>
+              <td>Building dashboards</td>
+              <td><input class="m-radio" type="radio" name="c_dash" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_dash" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_dash" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_dash" value="4"></td>
+            </tr>
+            <tr>
+              <td>Interpreting trends</td>
+              <td><input class="m-radio" type="radio" name="c_trends" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_trends" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_trends" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_trends" value="4"></td>
+            </tr>
+            <tr>
+              <td>Presenting insights</td>
+              <td><input class="m-radio" type="radio" name="c_pres" value="1"></td>
+              <td><input class="m-radio" type="radio" name="c_pres" value="2"></td>
+              <td><input class="m-radio" type="radio" name="c_pres" value="3"></td>
+              <td><input class="m-radio" type="radio" name="c_pres" value="4"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 5: Q4 Tools ── -->
+  <div class="step" id="step-5">
+    <div class="card">
+      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
+      <div class="q-title">Q4. Which data tools have you used?</div>
+      <div class="q-sub">Select all that apply.</div>
+      <div class="opt-grid">
+        <label class="opt"><input type="checkbox" name="capQ4" value="excel"><span class="opt-lbl">Excel</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="powerbi"><span class="opt-lbl">Power BI</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="tableau"><span class="opt-lbl">Tableau</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="sql"><span class="opt-lbl">SQL</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="databricks"><span class="opt-lbl">Databricks</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="python"><span class="opt-lbl">Python</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="r"><span class="opt-lbl">R</span></label>
+        <label class="opt"><input type="checkbox" name="capQ4" value="none" id="q4none"><span class="opt-lbl">None</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 6: Q5 Priorities ── -->
+  <div class="step" id="step-6">
+    <div class="card">
+      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
+      <div class="q-title">Q5. Which areas would you most like to improve?</div>
+      <div class="q-sub">Select up to 3 areas.</div>
+      <div class="opt-grid" id="q5grid">
+        <label class="opt"><input type="checkbox" name="capQ5" value="data-available"><span class="opt-lbl">Understanding what data is available</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="finding-datasets"><span class="opt-lbl">Finding the right datasets</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="sql"><span class="opt-lbl">SQL</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="databricks"><span class="opt-lbl">Databricks</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="dashboards"><span class="opt-lbl">Dashboard creation</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="dataviz"><span class="opt-lbl">Data visualisation</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="storytelling"><span class="opt-lbl">Data storytelling</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="automation"><span class="opt-lbl">Automation</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="ai-ml"><span class="opt-lbl">AI and Machine Learning</span></label>
+        <label class="opt"><input type="checkbox" name="capQ5" value="governance"><span class="opt-lbl">Data governance</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Step 7: Results ── -->
+  <div class="step" id="step-7">
+    <div class="res-header">
+      <span class="big-icon">✨</span>
+      <h2 id="resTitle">Your Data Profile</h2>
+      <p>Based on your responses, here is your personalised profile.</p>
+    </div>
+
+    <div class="profile-grid">
+      <div class="pcard dap">
+        <div class="plabel">DAP Journey Stage</div>
+        <span class="picon" id="dapIcon"></span>
+        <div class="ptitle" id="dapTitle"></div>
+        <div class="pdesc" id="dapDesc"></div>
+      </div>
+      <div class="pcard cap">
+        <div class="plabel">Data Capability</div>
+        <span class="picon" id="capIcon"></span>
+        <div class="ptitle" id="capTitle"></div>
+        <div class="pdesc" id="capDesc"></div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <h3>🎯 Recommended Support for You</h3>
+      <ul class="rec-list" id="recList"></ul>
+    </div>
+
+    <div class="impr-card" id="imprCard">
+      <strong>Your Top Learning Priorities</strong>
+      <div class="tags" id="imprTags"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-pri" onclick="window.print()">🖨️ Print Profile</button>
+      <button class="btn btn-sec" onclick="restartSurvey()">↩ Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Fixed bottom nav -->
+<div class="nav" id="navBar">
+  <button class="btn btn-sec" id="btnBack" onclick="goBack()">← Back</button>
+  <span class="ctr" id="navCtr"></span>
+  <button class="btn btn-pri" id="btnNext" onclick="goNext()">Start Survey →</button>
+</div>
+
+<script>
+'use strict';
+let cur = 0;
+const STEPS = 8;
+const LABELS = ['Welcome','DAP Readiness','Experience','Activities','Confidence','Tools','Priorities','Results'];
+
+// ── Progress & nav ──────────────────────────────────────────────
+function render() {
+  const wrap = document.getElementById('progWrap');
+  const fill = document.getElementById('progFill');
+  const pills = document.getElementById('progPills');
+  const btnBack = document.getElementById('btnBack');
+  const btnNext = document.getElementById('btnNext');
+  const ctr = document.getElementById('navCtr');
+
+  wrap.style.display = cur === 0 ? 'none' : 'block';
+  fill.style.width = (cur / (STEPS - 1) * 100) + '%';
+
+  pills.innerHTML = LABELS.slice(1).map((lbl, i) => {
+    const n = i + 1;
+    const cls = n < cur ? 'pill-done' : n === cur ? 'pill-active' : 'pill-todo';
+    return `<span class="pill ${cls}">${lbl}</span>`;
+  }).join('');
+
+  btnBack.style.visibility = cur === 0 ? 'hidden' : 'visible';
+  document.getElementById('navBar').style.display = cur === 0 ? 'none' : 'flex';
+
+  if (cur === STEPS - 1) {
+    btnNext.style.display = 'none';
+    ctr.textContent = 'Complete! 🎉';
+  } else {
+    btnNext.style.display = '';
+    btnNext.textContent = cur === STEPS - 2 ? 'See My Results →' : 'Continue →';
+    ctr.textContent = `Step ${cur} of ${STEPS - 2}`;
+  }
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  render();
+}
+
+// ── Validation ──────────────────────────────────────────────────
+function validate(n) {
+  if (n === 0) {
+    const email = document.getElementById('participantName').value.trim();
+    if (!email) {
+      alert('Please enter your email address before continuing.');
+      return false;
+    }
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRe.test(email)) {
+      alert('Please enter a valid email address.');
+      return false;
+    }
+  }
+  if (n === 1) {
+    if (!q('dapQ1') || !q('dapQ2') || !q('dapQ3')) {
+      alert('Please answer all three questions before continuing.');
+      return false;
+    }
+  }
+  if (n === 2) {
+    if (!q('capQ1')) {
+      alert('Please select an option before continuing.');
+      return false;
+    }
+  }
+  if (n === 4) {
+    const fields = ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres'];
+    if (fields.some(f => !q(f))) {
+      alert('Please rate your confidence for all six tasks before continuing.');
+      return false;
+    }
+  }
+  return true;
+}
+
+function q(name) {
+  return document.querySelector(`input[name="${name}"]:checked`);
+}
+
+// ── Navigation ──────────────────────────────────────────────────
+function goNext() {
+  if (!validate(cur)) return;
+  if (cur < STEPS - 1) {
+    cur++;
+    if (cur === STEPS - 1) buildResults();
+    showStep(cur);
+  }
+}
+
+function goBack() {
+  if (cur > 0) { cur--; showStep(cur); }
+}
+
+function restartSurvey() {
+  if (!confirm('This will clear all your answers. Are you sure?')) return;
+  document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(i => i.checked = false);
+  document.querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  document.querySelectorAll('table.matrix td').forEach(td => td.classList.remove('hi'));
+  cur = 0;
+  showStep(0);
+}
+
+// ── Option selection visuals ────────────────────────────────────
+document.querySelectorAll('.opt input').forEach(input => {
+  input.addEventListener('change', () => {
+    if (input.type === 'radio') {
+      document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => {
+        r.closest('.opt')?.classList.remove('sel');
+      });
+    }
+    const item = input.closest('.opt');
+    if (input.checked) item?.classList.add('sel');
+    else item?.classList.remove('sel');
+  });
+});
+
+// Matrix row highlight
+document.querySelectorAll('.m-radio').forEach(r => {
+  r.addEventListener('change', () => {
+    const row = r.closest('tr');
+    row.querySelectorAll('td').forEach(td => td.classList.remove('hi'));
+    r.closest('td').classList.add('hi');
+  });
+});
+
+// ── "None" mutual exclusion ─────────────────────────────────────
+function noneExclusion(groupName, noneId) {
+  const noneEl = document.getElementById(noneId);
+  if (!noneEl) return;
+  document.querySelectorAll(`input[name="${groupName}"]`).forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb === noneEl && cb.checked) {
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(o => {
+          if (o !== noneEl) { o.checked = false; o.closest('.opt')?.classList.remove('sel'); }
+        });
+      } else if (cb !== noneEl && cb.checked) {
+        noneEl.checked = false;
+        noneEl.closest('.opt')?.classList.remove('sel');
+      }
+    });
+  });
+}
+
+// Q5 max 3 selections
+document.querySelectorAll('input[name="capQ5"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (cb.checked) {
+      const checked = document.querySelectorAll('input[name="capQ5"]:checked');
+      if (checked.length > 3) {
+        cb.checked = false;
+        cb.closest('.opt')?.classList.remove('sel');
+        alert('Please select at most 3 areas.');
+      }
+    }
+  });
+});
+
+// ── Scoring ─────────────────────────────────────────────────────
+function score(name) { return parseInt(q(name)?.value || 0); }
+
+function getDAPResult(total) {
+  // total: 3-9
+  if (total <= 4) return { icon:'🌱', title:'Exploring Possibilities', bucket:1,
+    desc:'You\'re at the beginning of your DAP journey, discovering what the platform can offer your team.' };
+  if (total <= 7) return { icon:'🚀', title:'Ready to Onboard', bucket:2,
+    desc:'You\'ve identified the value in DAP and are preparing to — or beginning to — use it.' };
+  return { icon:'⭐', title:'Growing with DAP', bucket:3,
+    desc:'You\'re already using DAP and are ready to deepen your expertise and unlock more advanced capabilities.' };
+}
+
+function getCapResult(total) {
+  // total: 0-12
+  if (total <= 3) return { icon:'🌱', title:'Explorer', level:1,
+    desc:'You have little experience working with data and are ready to learn the fundamentals.' };
+  if (total <= 6) return { icon:'📊', title:'Practitioner', level:2,
+    desc:'You use data regularly (e.g. Excel, dashboards) and are ready to deepen your analytical skills.' };
+  if (total <= 9) return { icon:'💻', title:'Analyst', level:3,
+    desc:'You\'re comfortable with SQL, dashboards, or programming and want to build more advanced solutions.' };
+  return { icon:'🚀', title:'Advanced User', level:4,
+    desc:'You already develop analytics products or work extensively with data platforms like Databricks.' };
+}
+
+const RECS = {
+  '1-1':['Introduce core data concepts and terminology to build confidence.','Showcase real DAP use cases from your organisation.','Help identify what datasets are available and relevant to your team.','Explore what problems data could help you solve.'],
+  '1-2':['Walk through DAP use cases and the available data catalogue.','Demonstrate data workflows that build on your existing Excel/dashboard skills.','Identify a starting use case your team could pilot on DAP.'],
+  '1-3':['Show how your existing analytical skills (SQL, dashboards) translate to DAP.','Explore the DAP data catalogue and surface relevant datasets.','Discuss migrating existing workflows to the platform.'],
+  '1-4':['Showcase the full architecture and advanced capabilities of DAP.','Identify datasets, ML opportunities, or automation use cases for your team.','Discuss how to leverage existing expertise on the platform from day one.'],
+  '2-1':['Guide dataset discovery and onboarding on DAP.','Introduce the Databricks environment alongside fundamental data concepts.','Cover core skills (filtering, aggregation) within the platform context.'],
+  '2-2':['Guide dataset onboarding and key Databricks features step by step.','Introduce SQL within the DAP environment.','Support migration of existing dashboards to Power BI connected to DAP.'],
+  '2-3':['Focus on platform architecture and advanced SQL in Databricks.','Cover data pipeline and migration workflows and best practices.','Explore Power BI or Tableau integration with DAP at scale.'],
+  '2-4':['Cover optimisation, scheduling, and advanced Databricks features.','Discuss platform governance, security, and best practices.','Explore AI and ML capabilities and Delta Lake architecture.'],
+  '3-1':['Reinforce foundational data skills using real DAP datasets.','Provide guided hands-on exercises to build confidence quickly.','Connect data fundamentals directly to the platform tools you\'re already using.'],
+  '3-2':['Deepen SQL and dashboard skills using DAP-connected data.','Explore advanced Databricks features relevant to your role.','Build on existing reporting patterns to create more sophisticated solutions.'],
+  '3-3':['Cover advanced SQL optimisation and Databricks performance techniques.','Introduce automation, scheduled workflows, and data pipelines on DAP.','Explore AI, ML, or data product development opportunities.'],
+  '3-4':['Focus on platform optimisation, automation, and governance at scale.','Explore AI/ML capabilities and advanced analytics patterns.','Discuss opportunities to mentor others and shape platform best practices.'],
+};
+
+const Q5_LABELS = {
+  'data-available':'Understanding available data','finding-datasets':'Finding the right datasets',
+  'sql':'SQL','databricks':'Databricks','dashboards':'Dashboard creation',
+  'dataviz':'Data visualisation','storytelling':'Data storytelling',
+  'automation':'Automation','ai-ml':'AI and Machine Learning','governance':'Data governance'
+};
+
+// ── Build results ───────────────────────────────────────────────
+function buildResults() {
+  // DAP score (3-9)
+  const dapTotal = score('dapQ1') + score('dapQ2') + score('dapQ3');
+  const dap = getDAPResult(dapTotal);
+
+  // Capability score (0-12), simple band scoring
+  // Q1: new=0, excel=1, dashboard=1, sql=2, python/r=2, data products=3
+  const q1raw = score('capQ1');
+  const q1 = q1raw <= 0 ? 0 : q1raw <= 2 ? 1 : q1raw <= 4 ? 2 : 3;
+
+  // Q2: count activities checked → 0-1=0, 2-4=1, 5-6=2, 7-8=3
+  const q2Items = [...document.querySelectorAll('input[name="capQ2"]:checked')]
+    .filter(c => c.value !== 'none');
+  const q2n = q2Items.length;
+  const q2Score = q2n <= 1 ? 0 : q2n <= 4 ? 1 : q2n <= 6 ? 2 : 3;
+
+  // Q3: count tasks rated Confident(3) or Very confident(4) → 0-1=0, 2-3=1, 4-5=2, 6=3
+  const confFields = ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres'];
+  const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
+  const q3Score = q3n <= 1 ? 0 : q3n <= 3 ? 1 : q3n <= 5 ? 2 : 3;
+
+  // Q4: count tools checked → 0-1=0, 2-3=1, 4-5=2, 6-7=3
+  const q4Items = [...document.querySelectorAll('input[name="capQ4"]:checked')]
+    .filter(c => c.value !== 'none');
+  const q4n = q4Items.length;
+  const q4Score = q4n <= 1 ? 0 : q4n <= 3 ? 1 : q4n <= 5 ? 2 : 3;
+
+  const capTotal = q1 + q2Score + q3Score + q4Score;
+  const cap = getCapResult(capTotal);
+
+  // Populate
+  const email = document.getElementById('participantName').value.trim();
+  document.getElementById('resTitle').textContent = 'Your Data Profile';
+
+  document.getElementById('dapIcon').textContent = dap.icon;
+  document.getElementById('dapTitle').textContent = dap.title;
+  document.getElementById('dapDesc').textContent = dap.desc;
+
+  document.getElementById('capIcon').textContent = cap.icon;
+  document.getElementById('capTitle').textContent = cap.title;
+  document.getElementById('capDesc').textContent = cap.desc;
+
+  const key = `${dap.bucket}-${cap.level}`;
+  const recs = RECS[key] || ['Talk to your facilitator to design a personalised learning path.'];
+  document.getElementById('recList').innerHTML =
+    recs.map(r => `<li>${r}</li>`).join('');
+
+  // Improvement areas
+  const q5 = [...document.querySelectorAll('input[name="capQ5"]:checked')];
+  const imprCard = document.getElementById('imprCard');
+  if (q5.length) {
+    document.getElementById('imprTags').innerHTML =
+      q5.map(c => `<span class="tag">${Q5_LABELS[c.value] || c.value}</span>`).join('');
+    imprCard.style.display = '';
+  } else {
+    imprCard.style.display = 'none';
+  }
+}
+
+// ── Init ─────────────────────────────────────────────────────────
+noneExclusion('capQ2', 'q2none');
+noneExclusion('capQ4', 'q4none');
+document.getElementById('participantName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') goNext();
+});
+render();
+</script>
+</body>
+</html>
