@@ -195,6 +195,52 @@ table.matrix td.hi{background:var(--primary-l)}
           <input class="name-input" type="email" id="participantName" placeholder="Your email address" maxlength="120" required>
           <button class="btn btn-pri" onclick="goNext()">Start Survey →</button>
         </div>
+        <div class="name-row" style="margin-top:10px">
+          <select class="name-input" id="divisionSelect" style="max-width:340px;cursor:pointer;color:var(--text)">
+            <option value="" disabled selected>Select your division</option>
+            <option>AU</option>
+            <option>CDCP</option>
+            <option>CDD-HR</option>
+            <option>CDD-TXO</option>
+            <option>CDD-WDD</option>
+            <option>CED</option>
+            <option>DEO</option>
+            <option>DSD</option>
+            <option>DTO</option>
+            <option>GCDTO</option>
+            <option>GITD</option>
+            <option>IAD</option>
+            <option>ICO</option>
+            <option>IPD</option>
+            <option>JCC</option>
+            <option>JCDO</option>
+            <option>Legal</option>
+            <option>MD-CAD</option>
+            <option>MD-CO</option>
+            <option>MDDI Senior Management</option>
+            <option>MD-MAOD</option>
+            <option>MD-MED</option>
+            <option>NAIG</option>
+            <option>PCD-CPD</option>
+            <option>PCD-NMO</option>
+            <option>PCD-TD</option>
+            <option>PSMO</option>
+            <option>QPSU</option>
+            <option>RDD</option>
+            <option>REACH</option>
+            <option>SNG-GDD</option>
+            <option>SNG-Products</option>
+            <option>SNG-Smart City</option>
+            <option>SNG-SPR</option>
+            <option>SNG-TCD</option>
+            <option>SNG-WDD</option>
+            <option>SNSO</option>
+            <option>SPD-Finance</option>
+            <option>SPD-Planning</option>
+            <option>SRD</option>
+            <option>TO</option>
+          </select>
+        </div>
       </div>
       <p style="font-size:.88rem;color:var(--muted);margin-top:4px;text-align:center">This survey takes about 5 minutes to complete.</p>
     </div>
@@ -479,6 +525,10 @@ function validate(n) {
       alert('Please enter a valid email address.');
       return false;
     }
+    if (!document.getElementById('divisionSelect').value) {
+      alert('Please select your division before continuing.');
+      return false;
+    }
   }
   if (n === 1) {
     if (!q('dapQ1') || !q('dapQ2') || !q('dapQ3')) {
@@ -693,6 +743,7 @@ function buildResults() {
   // Save to Supabase
   submitToSupabase({
     email: document.getElementById('participantName').value.trim(),
+    division: document.getElementById('divisionSelect').value,
     dap_bucket: dap.bucket, dap_stage: dap.title,
     capability_level: cap.level, capability_label: cap.title,
     cap_total: capTotal,
