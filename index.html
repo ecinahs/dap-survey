@@ -371,18 +371,99 @@ table.matrix td.hi{background:var(--primary-l)}
   <div class="step" id="step-4">
     <div class="card">
       <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
-      <div class="q-title">Q3. Which data tools have you used?</div>
-      <div class="q-sub">Select all that apply.</div>
-      <div class="opt-grid">
-        <label class="opt"><input type="checkbox" name="capQ4" value="excel"><span class="opt-lbl">Excel</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="powerbi"><span class="opt-lbl">Power BI</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="tableau"><span class="opt-lbl">Tableau</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="sql"><span class="opt-lbl">SQL</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="databricks"><span class="opt-lbl">Databricks</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="python"><span class="opt-lbl">Python</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="r"><span class="opt-lbl">R</span></label>
-        <label class="opt"><input type="checkbox" name="capQ4" value="none" id="q4none"><span class="opt-lbl">None</span></label>
+      <div class="q-title">Q3. How would you rate your familiarity with the following data tools?</div>
+      <div class="q-sub">Select one option per row.</div>
+      <div class="matrix-wrap">
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th style="min-width:110px">Tool</th>
+              <th>Never used</th>
+              <th>Heard of it</th>
+              <th>Basic use</th>
+              <th>Regular use</th>
+              <th>Proficient</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Excel</td>
+              <td><input class="m-radio" type="radio" name="tool_excel" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_excel" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_excel" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_excel" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_excel" value="5"></td>
+            </tr>
+            <tr>
+              <td>Power BI</td>
+              <td><input class="m-radio" type="radio" name="tool_powerbi" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_powerbi" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_powerbi" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_powerbi" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_powerbi" value="5"></td>
+            </tr>
+            <tr>
+              <td>Tableau</td>
+              <td><input class="m-radio" type="radio" name="tool_tableau" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_tableau" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_tableau" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_tableau" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_tableau" value="5"></td>
+            </tr>
+            <tr>
+              <td>SQL</td>
+              <td><input class="m-radio" type="radio" name="tool_sql" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_sql" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_sql" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_sql" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_sql" value="5"></td>
+            </tr>
+            <tr>
+              <td>Databricks</td>
+              <td><input class="m-radio" type="radio" name="tool_databricks" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_databricks" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_databricks" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_databricks" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_databricks" value="5"></td>
+            </tr>
+            <tr>
+              <td>Python</td>
+              <td><input class="m-radio" type="radio" name="tool_python" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_python" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_python" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_python" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_python" value="5"></td>
+            </tr>
+            <tr>
+              <td>R</td>
+              <td><input class="m-radio" type="radio" name="tool_r" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_r" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_r" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_r" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_r" value="5"></td>
+            </tr>
+            <tr>
+              <td>SPSS</td>
+              <td><input class="m-radio" type="radio" name="tool_spss" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_spss" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_spss" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_spss" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_spss" value="5"></td>
+            </tr>
+            <tr>
+              <td>Others</td>
+              <td><input class="m-radio" type="radio" name="tool_others" value="1"></td>
+              <td><input class="m-radio" type="radio" name="tool_others" value="2"></td>
+              <td><input class="m-radio" type="radio" name="tool_others" value="3"></td>
+              <td><input class="m-radio" type="radio" name="tool_others" value="4"></td>
+              <td><input class="m-radio" type="radio" name="tool_others" value="5"></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      <input type="text" id="toolOthersText" placeholder="Please specify the other tool…" maxlength="100"
+        style="display:none;margin-top:10px;width:100%;padding:9px 12px;border:2px solid var(--border);
+        border-radius:9px;font-size:.9rem;color:var(--text);outline:none">
     </div>
   </div>
 
@@ -583,6 +664,14 @@ document.querySelectorAll('.m-radio').forEach(r => {
   });
 });
 
+// ── Tool Q3 "Others" text field toggle ──────────────────────────
+document.querySelectorAll('input[name="tool_others"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const txt = document.getElementById('toolOthersText');
+    txt.style.display = 'block';
+  });
+});
+
 // ── DAP Q2 follow-up (show only if Yes) ─────────────────────────
 document.querySelectorAll('input[name="dapQ2"]').forEach(r => {
   r.addEventListener('change', () => {
@@ -703,10 +792,9 @@ function buildResults() {
   const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
   const q3Score = q3n <= 0 ? 0 : q3n <= 2 ? 1 : q3n <= 3 ? 2 : 3;
 
-  // Q3: count tools checked → 0-1=0, 2-3=1, 4-5=2, 6-7=3
-  const q4Items = [...document.querySelectorAll('input[name="capQ4"]:checked')]
-    .filter(c => c.value !== 'none');
-  const q4n = q4Items.length;
+  // Q3: count tools rated Basic use(3) or above → 0-1=0, 2-3=1, 4-5=2, 6+=3
+  const toolFields = ['tool_excel','tool_powerbi','tool_tableau','tool_sql','tool_databricks','tool_python','tool_r','tool_spss','tool_others'];
+  const q4n = toolFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
   const q4Score = q4n <= 1 ? 0 : q4n <= 3 ? 1 : q4n <= 5 ? 2 : 3;
 
   const capTotal = q1 + q3Score + q4Score;
@@ -754,7 +842,10 @@ function buildResults() {
       ['c_find','c_clean','c_trends','c_pres']
         .map(f => [f, parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0)])
     ),
-    q4_tools: q4Items.map(c => c.value),
+    q4_tools: Object.fromEntries(
+      toolFields.map(f => [f, parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0)])
+        .concat([['tool_others_name', document.getElementById('toolOthersText').value.trim()]])
+    ),
     q5_priorities: q5.map(c => c.value),
   });
 }
@@ -775,7 +866,7 @@ async function submitToSupabase(payload) {
 }
 
 // ── Init ─────────────────────────────────────────────────────────
-noneExclusion('capQ4', 'q4none');
+
 document.getElementById('participantName').addEventListener('keydown', e => {
   if (e.key === 'Enter') goNext();
 });
