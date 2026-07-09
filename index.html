@@ -267,9 +267,8 @@ table.matrix td.hi{background:var(--primary-l)}
         <div class="q-title">2. Do you currently have a dataset ready to work with?</div>
         <div class="q-sub">Select the option that best describes your situation.</div>
         <div class="opt-list">
-          <label class="opt"><input type="radio" name="dapQ2" value="1"><span class="opt-lbl">No — I don't have a dataset yet and I'm still figuring out what data I might need.</span></label>
-          <label class="opt"><input type="radio" name="dapQ2" value="2"><span class="opt-lbl">Yes — I have a dataset identified and know what I'd like to do with it.</span></label>
-          <label class="opt"><input type="radio" name="dapQ2" value="3"><span class="opt-lbl">Yes — I'm already working with data on DAP.</span></label>
+          <label class="opt"><input type="radio" name="dapQ2" value="1"><span class="opt-lbl">No</span></label>
+          <label class="opt"><input type="radio" name="dapQ2" value="2"><span class="opt-lbl">Yes</span></label>
         </div>
       </div>
 
@@ -640,10 +639,10 @@ document.querySelectorAll('input[name="capQ5"]').forEach(cb => {
 function score(name) { return parseInt(q(name)?.value || 0); }
 
 function getDAPResult(total) {
-  // total: 3-9
+  // total: 3-8 (Q2 is Yes/No so max is 2 not 3)
   if (total <= 4) return { icon:'🌱', title:'Exploring Possibilities', bucket:1,
     desc:'You\'re at the beginning of your DAP journey, discovering what the platform can offer your team.' };
-  if (total <= 7) return { icon:'🚀', title:'Ready to Onboard', bucket:2,
+  if (total <= 6) return { icon:'🚀', title:'Ready to Onboard', bucket:2,
     desc:'You\'ve identified the value in DAP and are preparing to — or beginning to — use it.' };
   return { icon:'⭐', title:'Growing with DAP', bucket:3,
     desc:'You\'re already using DAP and are ready to deepen your expertise and unlock more advanced capabilities.' };
