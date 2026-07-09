@@ -279,6 +279,10 @@ table.matrix td.hi{background:var(--primary-l)}
           <label class="opt"><input type="radio" name="dapQ3" value="1"><span class="opt-lbl">To understand what DAP is and whether it's relevant to my work — I'm just starting to explore.</span></label>
           <label class="opt"><input type="radio" name="dapQ3" value="2"><span class="opt-lbl">To get hands-on and start building — I want to take my dataset and create an end-to-end pipeline.</span></label>
           <label class="opt"><input type="radio" name="dapQ3" value="3"><span class="opt-lbl">To go further with DAP — I'm already onboard and want to discover advanced features and capabilities.</span></label>
+          <label class="opt" id="dapQ3OtherOpt"><input type="radio" name="dapQ3" value="other"><span class="opt-lbl">Others</span></label>
+          <input type="text" id="dapQ3OtherText" placeholder="Please specify…" maxlength="200"
+            style="display:none;margin-top:6px;width:100%;padding:9px 12px;border:2px solid var(--border);
+            border-radius:9px;font-size:.9rem;color:var(--text);outline:none">
         </div>
       </div>
     </div>
@@ -569,6 +573,15 @@ document.querySelectorAll('.m-radio').forEach(r => {
   });
 });
 
+// ── DAP Q3 "Others" text field toggle ───────────────────────────
+document.querySelectorAll('input[name="dapQ3"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const txt = document.getElementById('dapQ3OtherText');
+    txt.style.display = r.value === 'other' ? 'block' : 'none';
+    if (r.value !== 'other') txt.value = '';
+  });
+});
+
 // ── "None" mutual exclusion ─────────────────────────────────────
 function noneExclusion(groupName, noneId) {
   const noneEl = document.getElementById(noneId);
@@ -650,8 +663,10 @@ const Q5_LABELS = {
 
 // ── Build results ───────────────────────────────────────────────
 function buildResults() {
-  // DAP score (3-9)
-  const dapTotal = score('dapQ1') + score('dapQ2') + score('dapQ3');
+  // DAP score (3-9); dapQ3 "other" treated as 1 (exploring)
+  const dapQ3val = q('dapQ3')?.value;
+  const dapQ3score = dapQ3val === 'other' ? 1 : parseInt(dapQ3val || 0);
+  const dapTotal = score('dapQ1') + score('dapQ2') + dapQ3score;
   const dap = getDAPResult(dapTotal);
 
   // Capability score (0-9), simple band scoring
@@ -708,7 +723,7 @@ function buildResults() {
     dap_bucket: dap.bucket, dap_stage: dap.title,
     capability_level: cap.level, capability_label: cap.title,
     cap_total: capTotal,
-    dap_q1: score('dapQ1'), dap_q2: score('dapQ2'), dap_q3: score('dapQ3'),
+    dap_q1: score('dapQ1'), dap_q2: score('dapQ2'), dap_q3: dapQ3score,
     q1_score: q1, q2_score: 0, q3_score: q3Score, q4_score: q4Score,
     q2_activities: [],
     q3_confidence: Object.fromEntries(
