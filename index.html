@@ -301,31 +301,11 @@ table.matrix td.hi{background:var(--primary-l)}
     </div>
   </div>
 
-  <!-- ── Step 3: Q2 Activities ── -->
+  <!-- ── Step 3: Q2 Confidence matrix ── -->
   <div class="step" id="step-3">
     <div class="card">
       <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
-      <div class="q-title">Q2. Which of the following have you done before?</div>
-      <div class="q-sub">Select all that apply.</div>
-      <div class="opt-grid">
-        <label class="opt"><input type="checkbox" name="capQ2" value="pivottables"><span class="opt-lbl">Used PivotTables in Excel</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="charts"><span class="opt-lbl">Created charts or reports</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="dashboard"><span class="opt-lbl">Built a dashboard</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="sql"><span class="opt-lbl">Written SQL queries</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="cleaning"><span class="opt-lbl">Cleaned or transformed datasets</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="combine"><span class="opt-lbl">Combined data from multiple sources</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="databricks"><span class="opt-lbl">Used Databricks</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="python-r"><span class="opt-lbl">Used Python or R</span></label>
-        <label class="opt"><input type="checkbox" name="capQ2" value="none" id="q2none"><span class="opt-lbl">None of the above</span></label>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Step 4: Q3 Confidence matrix ── -->
-  <div class="step" id="step-4">
-    <div class="card">
-      <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
-      <div class="q-title">Q3. How confident are you in performing the following tasks?</div>
+      <div class="q-title">Q2. How confident are you in performing the following tasks?</div>
       <div class="q-sub">Select one option per row.</div>
       <div class="matrix-wrap">
         <table class="matrix">
@@ -354,20 +334,6 @@ table.matrix td.hi{background:var(--primary-l)}
               <td><input class="m-radio" type="radio" name="c_clean" value="4"></td>
             </tr>
             <tr>
-              <td>Writing SQL</td>
-              <td><input class="m-radio" type="radio" name="c_sql" value="1"></td>
-              <td><input class="m-radio" type="radio" name="c_sql" value="2"></td>
-              <td><input class="m-radio" type="radio" name="c_sql" value="3"></td>
-              <td><input class="m-radio" type="radio" name="c_sql" value="4"></td>
-            </tr>
-            <tr>
-              <td>Building dashboards</td>
-              <td><input class="m-radio" type="radio" name="c_dash" value="1"></td>
-              <td><input class="m-radio" type="radio" name="c_dash" value="2"></td>
-              <td><input class="m-radio" type="radio" name="c_dash" value="3"></td>
-              <td><input class="m-radio" type="radio" name="c_dash" value="4"></td>
-            </tr>
-            <tr>
               <td>Interpreting trends</td>
               <td><input class="m-radio" type="radio" name="c_trends" value="1"></td>
               <td><input class="m-radio" type="radio" name="c_trends" value="2"></td>
@@ -387,11 +353,11 @@ table.matrix td.hi{background:var(--primary-l)}
     </div>
   </div>
 
-  <!-- ── Step 5: Q4 Tools ── -->
-  <div class="step" id="step-5">
+  <!-- ── Step 4: Q3 Tools ── -->
+  <div class="step" id="step-4">
     <div class="card">
       <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
-      <div class="q-title">Q4. Which data tools have you used?</div>
+      <div class="q-title">Q3. Which data tools have you used?</div>
       <div class="q-sub">Select all that apply.</div>
       <div class="opt-grid">
         <label class="opt"><input type="checkbox" name="capQ4" value="excel"><span class="opt-lbl">Excel</span></label>
@@ -406,11 +372,11 @@ table.matrix td.hi{background:var(--primary-l)}
     </div>
   </div>
 
-  <!-- ── Step 6: Q5 Priorities ── -->
-  <div class="step" id="step-6">
+  <!-- ── Step 5: Q4 Priorities ── -->
+  <div class="step" id="step-5">
     <div class="card">
       <span class="badge badge-cap">💡 Section 2 of 2 · Data Capability</span>
-      <div class="q-title">Q5. Which areas would you most like to improve?</div>
+      <div class="q-title">Q4. Which areas would you most like to improve?</div>
       <div class="q-sub">Select up to 3 areas.</div>
       <div class="opt-grid" id="q5grid">
         <label class="opt"><input type="checkbox" name="capQ5" value="data-available"><span class="opt-lbl">Understanding what data is available</span></label>
@@ -427,8 +393,8 @@ table.matrix td.hi{background:var(--primary-l)}
     </div>
   </div>
 
-  <!-- ── Step 7: Results ── -->
-  <div class="step" id="step-7">
+  <!-- ── Step 6: Results ── -->
+  <div class="step" id="step-6">
     <div class="res-header">
       <span class="big-icon">✨</span>
       <h2 id="resTitle">Your Data Profile</h2>
@@ -487,8 +453,8 @@ const db = (SUPABASE_URL !== 'YOUR_SUPABASE_URL')
   ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 let cur = 0;
-const STEPS = 8;
-const LABELS = ['Welcome','DAP Readiness','Experience','Activities','Confidence','Tools','Priorities','Results'];
+const STEPS = 7;
+const LABELS = ['Welcome','DAP Readiness','Experience','Confidence','Tools','Priorities','Results'];
 
 // ── Progress ─────────────────────────────────────────────────────
 function render() {
@@ -543,10 +509,10 @@ function validate(n) {
       return false;
     }
   }
-  if (n === 4) {
-    const fields = ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres'];
+  if (n === 3) {
+    const fields = ['c_find','c_clean','c_trends','c_pres'];
     if (fields.some(f => !q(f))) {
-      alert('Please rate your confidence for all six tasks before continuing.');
+      alert('Please rate your confidence for all four tasks before continuing.');
       return false;
     }
   }
@@ -621,7 +587,7 @@ function noneExclusion(groupName, noneId) {
   });
 }
 
-// Q5 max 3 selections
+// Q4 max 3 selections
 document.querySelectorAll('input[name="capQ5"]').forEach(cb => {
   cb.addEventListener('change', () => {
     if (cb.checked) {
@@ -649,12 +615,12 @@ function getDAPResult(total) {
 }
 
 function getCapResult(total) {
-  // total: 0-12
-  if (total <= 3) return { icon:'🌱', title:'Explorer', level:1,
+  // total: 0-9
+  if (total <= 2) return { icon:'🌱', title:'Explorer', level:1,
     desc:'You have little experience working with data and are ready to learn the fundamentals.' };
-  if (total <= 6) return { icon:'📊', title:'Practitioner', level:2,
+  if (total <= 5) return { icon:'📊', title:'Practitioner', level:2,
     desc:'You use data regularly (e.g. Excel, dashboards) and are ready to deepen your analytical skills.' };
-  if (total <= 9) return { icon:'💻', title:'Analyst', level:3,
+  if (total <= 7) return { icon:'💻', title:'Analyst', level:3,
     desc:'You\'re comfortable with SQL, dashboards, or programming and want to build more advanced solutions.' };
   return { icon:'🚀', title:'Advanced User', level:4,
     desc:'You already develop analytics products or work extensively with data platforms like Databricks.' };
@@ -688,29 +654,23 @@ function buildResults() {
   const dapTotal = score('dapQ1') + score('dapQ2') + score('dapQ3');
   const dap = getDAPResult(dapTotal);
 
-  // Capability score (0-12), simple band scoring
+  // Capability score (0-9), simple band scoring
   // Q1: new=0, excel=1, dashboard=1, sql=2, python/r=2, data products=3
   const q1raw = score('capQ1');
   const q1 = q1raw <= 0 ? 0 : q1raw <= 2 ? 1 : q1raw <= 4 ? 2 : 3;
 
-  // Q2: count activities checked → 0-1=0, 2-4=1, 5-6=2, 7-8=3
-  const q2Items = [...document.querySelectorAll('input[name="capQ2"]:checked')]
-    .filter(c => c.value !== 'none');
-  const q2n = q2Items.length;
-  const q2Score = q2n <= 1 ? 0 : q2n <= 4 ? 1 : q2n <= 6 ? 2 : 3;
-
-  // Q3: count tasks rated Confident(3) or Very confident(4) → 0-1=0, 2-3=1, 4-5=2, 6=3
-  const confFields = ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres'];
+  // Q2: count tasks rated Confident(3) or Very confident(4) → 0=0, 1-2=1, 3=2, 4=3
+  const confFields = ['c_find','c_clean','c_trends','c_pres'];
   const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
-  const q3Score = q3n <= 1 ? 0 : q3n <= 3 ? 1 : q3n <= 5 ? 2 : 3;
+  const q3Score = q3n <= 0 ? 0 : q3n <= 2 ? 1 : q3n <= 3 ? 2 : 3;
 
-  // Q4: count tools checked → 0-1=0, 2-3=1, 4-5=2, 6-7=3
+  // Q3: count tools checked → 0-1=0, 2-3=1, 4-5=2, 6-7=3
   const q4Items = [...document.querySelectorAll('input[name="capQ4"]:checked')]
     .filter(c => c.value !== 'none');
   const q4n = q4Items.length;
   const q4Score = q4n <= 1 ? 0 : q4n <= 3 ? 1 : q4n <= 5 ? 2 : 3;
 
-  const capTotal = q1 + q2Score + q3Score + q4Score;
+  const capTotal = q1 + q3Score + q4Score;
   const cap = getCapResult(capTotal);
 
   // Populate
@@ -749,10 +709,10 @@ function buildResults() {
     capability_level: cap.level, capability_label: cap.title,
     cap_total: capTotal,
     dap_q1: score('dapQ1'), dap_q2: score('dapQ2'), dap_q3: score('dapQ3'),
-    q1_score: q1, q2_score: q2Score, q3_score: q3Score, q4_score: q4Score,
-    q2_activities: q2Items.map(c => c.value),
+    q1_score: q1, q2_score: 0, q3_score: q3Score, q4_score: q4Score,
+    q2_activities: [],
     q3_confidence: Object.fromEntries(
-      ['c_find','c_clean','c_sql','c_dash','c_trends','c_pres']
+      ['c_find','c_clean','c_trends','c_pres']
         .map(f => [f, parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0)])
     ),
     q4_tools: q4Items.map(c => c.value),
@@ -776,7 +736,6 @@ async function submitToSupabase(payload) {
 }
 
 // ── Init ─────────────────────────────────────────────────────────
-noneExclusion('capQ2', 'q2none');
 noneExclusion('capQ4', 'q4none');
 document.getElementById('participantName').addEventListener('keydown', e => {
   if (e.key === 'Enter') goNext();
