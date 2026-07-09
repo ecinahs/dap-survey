@@ -272,6 +272,16 @@ table.matrix td.hi{background:var(--primary-l)}
         </div>
       </div>
 
+      <div class="q-block" id="dapQ2FollowUp" style="display:none">
+        <div class="q-title">2a. Would it be okay to share your dataset with DTO for the team to study how we can help?</div>
+        <div class="q-sub">Select one.</div>
+        <div class="opt-list">
+          <label class="opt"><input type="radio" name="dapQ2share" value="no"><span class="opt-lbl">No, I'd prefer to keep it private for now.</span></label>
+          <label class="opt"><input type="radio" name="dapQ2share" value="yes"><span class="opt-lbl">Yes, happy to share.</span></label>
+          <label class="opt"><input type="radio" name="dapQ2share" value="maybe"><span class="opt-lbl">Maybe — I'd like to find out more first.</span></label>
+        </div>
+      </div>
+
       <div class="q-block">
         <div class="q-title">3. What outcome are you hoping to achieve to be onboard MDDI's Data Analytics Platform?</div>
         <div class="q-sub">Select the option that best describes your goal.</div>
@@ -573,6 +583,20 @@ document.querySelectorAll('.m-radio').forEach(r => {
   });
 });
 
+// ── DAP Q2 follow-up (show only if Yes) ─────────────────────────
+document.querySelectorAll('input[name="dapQ2"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const fu = document.getElementById('dapQ2FollowUp');
+    fu.style.display = r.value === '2' ? 'block' : 'none';
+    if (r.value !== '2') {
+      document.querySelectorAll('input[name="dapQ2share"]').forEach(s => {
+        s.checked = false;
+        s.closest('.opt')?.classList.remove('sel');
+      });
+    }
+  });
+});
+
 // ── DAP Q3 "Others" text field toggle ───────────────────────────
 document.querySelectorAll('input[name="dapQ3"]').forEach(r => {
   r.addEventListener('change', () => {
@@ -725,7 +749,7 @@ function buildResults() {
     cap_total: capTotal,
     dap_q1: score('dapQ1'), dap_q2: score('dapQ2'), dap_q3: dapQ3score,
     q1_score: q1, q2_score: 0, q3_score: q3Score, q4_score: q4Score,
-    q2_activities: [],
+    q2_activities: document.querySelector('input[name="dapQ2share"]:checked')?.value || '',
     q3_confidence: Object.fromEntries(
       ['c_find','c_clean','c_trends','c_pres']
         .map(f => [f, parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0)])
