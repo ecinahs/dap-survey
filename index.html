@@ -327,7 +327,8 @@ table.matrix td.hi{background:var(--primary-l)}
             <tr>
               <th>Task</th>
               <th>Not confident</th>
-              <th>Somewhat</th>
+              <th>Slightly</th>
+              <th>Moderately</th>
               <th>Confident</th>
               <th>Very confident</th>
             </tr>
@@ -339,6 +340,7 @@ table.matrix td.hi{background:var(--primary-l)}
               <td><input class="m-radio" type="radio" name="c_find" value="2"></td>
               <td><input class="m-radio" type="radio" name="c_find" value="3"></td>
               <td><input class="m-radio" type="radio" name="c_find" value="4"></td>
+              <td><input class="m-radio" type="radio" name="c_find" value="5"></td>
             </tr>
             <tr>
               <td>Cleaning data</td>
@@ -346,6 +348,7 @@ table.matrix td.hi{background:var(--primary-l)}
               <td><input class="m-radio" type="radio" name="c_clean" value="2"></td>
               <td><input class="m-radio" type="radio" name="c_clean" value="3"></td>
               <td><input class="m-radio" type="radio" name="c_clean" value="4"></td>
+              <td><input class="m-radio" type="radio" name="c_clean" value="5"></td>
             </tr>
             <tr>
               <td>Interpreting trends</td>
@@ -353,6 +356,7 @@ table.matrix td.hi{background:var(--primary-l)}
               <td><input class="m-radio" type="radio" name="c_trends" value="2"></td>
               <td><input class="m-radio" type="radio" name="c_trends" value="3"></td>
               <td><input class="m-radio" type="radio" name="c_trends" value="4"></td>
+              <td><input class="m-radio" type="radio" name="c_trends" value="5"></td>
             </tr>
             <tr>
               <td>Presenting insights</td>
@@ -360,6 +364,7 @@ table.matrix td.hi{background:var(--primary-l)}
               <td><input class="m-radio" type="radio" name="c_pres" value="2"></td>
               <td><input class="m-radio" type="radio" name="c_pres" value="3"></td>
               <td><input class="m-radio" type="radio" name="c_pres" value="4"></td>
+              <td><input class="m-radio" type="radio" name="c_pres" value="5"></td>
             </tr>
           </tbody>
         </table>
@@ -787,9 +792,9 @@ function buildResults() {
   const q1raw = score('capQ1');
   const q1 = q1raw <= 0 ? 0 : q1raw <= 2 ? 1 : q1raw <= 4 ? 2 : 3;
 
-  // Q2: count tasks rated Confident(3) or Very confident(4) → 0=0, 1-2=1, 3=2, 4=3
+  // Q2: count tasks rated Confident(4) or Very confident(5) → 0=0, 1-2=1, 3=2, 4=3
   const confFields = ['c_find','c_clean','c_trends','c_pres'];
-  const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
+  const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 4).length;
   const q3Score = q3n <= 0 ? 0 : q3n <= 2 ? 1 : q3n <= 3 ? 2 : 3;
 
   // Q3: count tools rated Basic use(3) or above → 0-1=0, 2-3=1, 4-5=2, 6+=3
