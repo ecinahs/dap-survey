@@ -94,13 +94,10 @@ table.matrix td.hi{background:var(--primary-l)}
 .workshop-title{font-weight:700;font-size:1rem;margin-bottom:3px}
 .workshop-body{font-size:.92rem;opacity:.92;line-height:1.5}
 .workshop-rsvp{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-.btn-rsvp{padding:7px 20px;border-radius:8px;font-size:.88rem;font-weight:600;
-  cursor:pointer;border:2px solid rgba(255,255,255,.6);transition:all .15s}
+.btn-rsvp{display:inline-block;padding:9px 22px;border-radius:8px;font-size:.9rem;font-weight:600;
+  cursor:pointer;border:2px solid rgba(255,255,255,.7);transition:all .15s;text-decoration:none}
 .btn-rsvp-yes{background:rgba(255,255,255,.22);color:#fff}
-.btn-rsvp-yes:hover{background:#fff;color:#4338ca}
-.btn-rsvp-no{background:transparent;color:rgba(255,255,255,.85)}
-.btn-rsvp-no:hover{background:rgba(255,255,255,.12);color:#fff}
-.workshop-confirm{margin-top:10px;font-size:.92rem;font-weight:600;opacity:.95}
+.btn-rsvp-yes:hover{background:#fff;color:#4338ca;border-color:#fff}
 
 /* ── Nav bar ── */
 .nav{display:none}
@@ -537,11 +534,11 @@ table.matrix td.hi{background:var(--primary-l)}
       <div class="workshop-text">
         <div class="workshop-title">Join us for the first DAP Workshop!</div>
         <div class="workshop-body">Can you join us on <strong>13 August</strong> at the <strong>MDDI Staff Lounge</strong>?</div>
-        <div class="workshop-rsvp" id="workshopRsvp">
-          <button class="btn-rsvp btn-rsvp-yes" onclick="rsvp('yes')">✓ Yes, I'll be there</button>
-          <button class="btn-rsvp btn-rsvp-no"  onclick="rsvp('no')">✗ Can't make it</button>
+        <div class="workshop-rsvp" style="margin-top:12px">
+          <a class="btn-rsvp btn-rsvp-yes" href="https://go.gov.sg/rsvp-dap-training" target="_blank" rel="noopener">
+            👉 Click here to indicate your preferred DAP training date
+          </a>
         </div>
-        <div class="workshop-confirm" id="workshopConfirm" style="display:none"></div>
       </div>
     </div>
 
@@ -889,17 +886,6 @@ function buildResults() {
   });
 }
 
-function rsvp(answer) {
-  document.getElementById('workshopRsvp').style.display = 'none';
-  const confirmEl = document.getElementById('workshopConfirm');
-  confirmEl.style.display = 'block';
-  confirmEl.textContent = answer === 'yes'
-    ? '🎉 Great, see you on 13 August!'
-    : '👍 No worries — we hope to see you at a future session!';
-  if (db && insertedRowId) {
-    db.from('DAP Survey Buckets').update({ workshop_rsvp: answer }).eq('id', insertedRowId);
-  }
-}
 
 async function submitToSupabase(payload) {
   const statusEl = document.getElementById('saveStatus');
