@@ -882,7 +882,6 @@ function buildResults() {
         .concat([['tool_others_name', document.getElementById('toolOthersText').value.trim()]])
     ),
     q5_priorities: q5.map(c => c.value),
-    workshop_rsvp: null,
   });
 }
 
@@ -892,12 +891,11 @@ async function submitToSupabase(payload) {
   if (!db) { statusEl.textContent = ''; return; }
   statusEl.style.color = '#64748b';
   statusEl.textContent = 'Saving your response…';
-  const { data, error } = await db.from('DAP Survey Buckets').insert(payload).select('id').single();
+  const { error } = await db.from('DAP Survey Buckets').insert(payload);
   if (error) {
     statusEl.style.color = '#dc2626';
     statusEl.textContent = '⚠ Could not save response — ' + error.message;
   } else {
-    insertedRowId = data?.id || null;
     statusEl.style.color = '#059669';
     statusEl.textContent = '✓ Response saved successfully.';
   }
