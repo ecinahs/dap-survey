@@ -86,6 +86,14 @@ table.matrix tr:hover td{background:#f8faff}
 table.matrix td.hi{background:var(--primary-l)}
 .m-radio{width:19px;height:19px;accent-color:var(--primary);cursor:pointer}
 
+/* ── Workshop invite card ── */
+.workshop-card{display:flex;align-items:center;gap:16px;
+  background:linear-gradient(135deg,#4338ca 0%,#0ea5e9 100%);
+  border-radius:var(--r);padding:20px 24px;margin-bottom:18px;color:#fff}
+.workshop-icon{font-size:2rem;flex-shrink:0}
+.workshop-title{font-weight:700;font-size:1rem;margin-bottom:3px}
+.workshop-body{font-size:.92rem;opacity:.92;line-height:1.5}
+
 /* ── Nav bar ── */
 .nav{display:none}
 .inline-nav{display:flex;justify-content:space-between;align-items:center;
@@ -513,6 +521,14 @@ table.matrix td.hi{background:var(--primary-l)}
         <span class="picon" id="capIcon"></span>
         <div class="ptitle" id="capTitle"></div>
         <div class="pdesc" id="capDesc"></div>
+      </div>
+    </div>
+
+    <div class="workshop-card">
+      <span class="workshop-icon">📅</span>
+      <div class="workshop-text">
+        <div class="workshop-title">Join us for a Workshop!</div>
+        <div class="workshop-body">Can you join us on <strong>13 August</strong> at the <strong>MDDI Staff Lounge</strong>?</div>
       </div>
     </div>
 
