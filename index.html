@@ -582,6 +582,7 @@ const db = (SUPABASE_URL !== 'YOUR_SUPABASE_URL')
   ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
   : null;
 let cur = 0;
+let insertedRowId = null;
 const STEPS = 7;
 const LABELS = ['Welcome','DAP Readiness','Experience','Confidence','Tools','Priorities','Results'];
 
@@ -884,16 +885,20 @@ function buildResults() {
         .concat([['tool_others_name', document.getElementById('toolOthersText').value.trim()]])
     ),
     q5_priorities: q5.map(c => c.value),
+    workshop_rsvp: null,
   });
 }
 
 function rsvp(answer) {
   document.getElementById('workshopRsvp').style.display = 'none';
-  const confirm = document.getElementById('workshopConfirm');
-  confirm.style.display = 'block';
-  confirm.textContent = answer === 'yes'
+  const confirmEl = document.getElementById('workshopConfirm');
+  confirmEl.style.display = 'block';
+  confirmEl.textContent = answer === 'yes'
     ? '🎉 Great, see you on 13 August!'
     : '👍 No worries — we hope to see you at a future session!';
+  if (db && insertedRowId) {
+    db.from('DAP Survey Buckets').update({ workshop_rsvp: answer }).eq('id', insertedRowId);
+  }
 }
 
 async function submitToSupabase(payload) {
@@ -901,11 +906,12 @@ async function submitToSupabase(payload) {
   if (!db) { statusEl.textContent = ''; return; }
   statusEl.style.color = '#64748b';
   statusEl.textContent = 'Saving your response…';
-  const { error } = await db.from('DAP Survey Buckets').insert(payload);
+  const { data, error } = await db.from('DAP Survey Buckets').insert(payload).select('id').single();
   if (error) {
     statusEl.style.color = '#dc2626';
     statusEl.textContent = '⚠ Could not save response — ' + error.message;
   } else {
+    insertedRowId = data?.id || null;
     statusEl.style.color = '#059669';
     statusEl.textContent = '✓ Response saved successfully.';
   }
