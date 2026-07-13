@@ -93,6 +93,14 @@ table.matrix td.hi{background:var(--primary-l)}
 .workshop-icon{font-size:2rem;flex-shrink:0}
 .workshop-title{font-weight:700;font-size:1rem;margin-bottom:3px}
 .workshop-body{font-size:.92rem;opacity:.92;line-height:1.5}
+.workshop-rsvp{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn-rsvp{padding:7px 20px;border-radius:8px;font-size:.88rem;font-weight:600;
+  cursor:pointer;border:2px solid rgba(255,255,255,.6);transition:all .15s}
+.btn-rsvp-yes{background:rgba(255,255,255,.22);color:#fff}
+.btn-rsvp-yes:hover{background:#fff;color:#4338ca}
+.btn-rsvp-no{background:transparent;color:rgba(255,255,255,.85)}
+.btn-rsvp-no:hover{background:rgba(255,255,255,.12);color:#fff}
+.workshop-confirm{margin-top:10px;font-size:.92rem;font-weight:600;opacity:.95}
 
 /* ── Nav bar ── */
 .nav{display:none}
@@ -529,6 +537,11 @@ table.matrix td.hi{background:var(--primary-l)}
       <div class="workshop-text">
         <div class="workshop-title">Join us for a Workshop!</div>
         <div class="workshop-body">Can you join us on <strong>13 August</strong> at the <strong>MDDI Staff Lounge</strong>?</div>
+        <div class="workshop-rsvp" id="workshopRsvp">
+          <button class="btn-rsvp btn-rsvp-yes" onclick="rsvp('yes')">✓ Yes, I'll be there</button>
+          <button class="btn-rsvp btn-rsvp-no"  onclick="rsvp('no')">✗ Can't make it</button>
+        </div>
+        <div class="workshop-confirm" id="workshopConfirm" style="display:none"></div>
       </div>
     </div>
 
@@ -872,6 +885,15 @@ function buildResults() {
     ),
     q5_priorities: q5.map(c => c.value),
   });
+}
+
+function rsvp(answer) {
+  document.getElementById('workshopRsvp').style.display = 'none';
+  const confirm = document.getElementById('workshopConfirm');
+  confirm.style.display = 'block';
+  confirm.textContent = answer === 'yes'
+    ? '🎉 Great, see you on 13 August!'
+    : '👍 No worries — we hope to see you at a future session!';
 }
 
 async function submitToSupabase(payload) {
