@@ -383,11 +383,11 @@ table.matrix td.hi{background:var(--primary-l)}
           <thead>
             <tr>
               <th style="min-width:110px">Tool</th>
-              <th>Never used</th>
-              <th>Heard of it</th>
-              <th>Used it before</th>
+              <th>Never heard of it</th>
+              <th>Heard of it but never used</th>
+              <th>Tried it once or twice</th>
+              <th>Use occasionally</th>
               <th>Use regularly</th>
-              <th>Expert</th>
             </tr>
           </thead>
           <tbody>
@@ -800,7 +800,7 @@ function buildResults() {
   const q3n = confFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 4).length;
   const q3Score = q3n <= 0 ? 0 : q3n <= 2 ? 1 : q3n <= 3 ? 2 : 3;
 
-  // Q3: count tools rated Basic use(3) or above → 0-1=0, 2-3=1, 4-5=2, 6+=3
+  // Q3: count tools rated "Tried it once or twice"(3) or above → 0-1=0, 2-3=1, 4-5=2, 6+=3
   const toolFields = ['tool_excel','tool_powerbi','tool_tableau','tool_sql','tool_databricks','tool_python','tool_r','tool_spss','tool_others'];
   const q4n = toolFields.filter(f => parseInt(document.querySelector(`input[name="${f}"]:checked`)?.value || 0) >= 3).length;
   const q4Score = q4n <= 1 ? 0 : q4n <= 3 ? 1 : q4n <= 5 ? 2 : 3;
